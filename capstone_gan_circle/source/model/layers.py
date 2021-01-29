@@ -130,7 +130,7 @@ class sft(Layer):
 
     def get_config(self):
         config = super(sft, self).get_config()
-        config.update({"units_0": self.units_0, "units_1": self.units_1})
+        # config.update({"units_0": self.units_0, "units_1": self.units_1})
         return config
 
 
@@ -170,13 +170,6 @@ class condition(Layer):
         shared_sft_cond = self.leaky_3(shared_sft_cond)
 
         return shared_sft_cond
-
-    def get_config(self):
-        config = super(condition, self).get_config()
-        config.update({"binning_range": self.binning_range,
-                       "nbins": self.nbins})
-        return config
-
 
 class sa(Layer):
     def __init__(self, filters, num_categories=1, **kwargs):
