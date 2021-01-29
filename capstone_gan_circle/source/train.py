@@ -7,7 +7,7 @@ import json
 from model.circle_gan import ganCIRCLE
 from utils.loader import DataLoader
 from tensorflow.keras.utils import Progbar
-
+from utils.image_tools import calculate_image_similarity
 
 def _parse_args():
     parser = argparse.ArgumentParser()
@@ -15,7 +15,7 @@ def _parse_args():
     # Data, model, and output directories
     # model_dir is always passed in from SageMaker. By default this is a S3 path under the default bucket.
     # ARGUMENTS FOR SAGEMAKER TRAINING
-    # parser.add_argument('--model_dir', type=str)
+    parser.add_argument('--model_dir', type=str, default=os.getcwd())
     # parser.add_argument('--sm-model-dir', type=str,
     #                     default=os.environ.get('SM_MODEL_DIR'))
     # parser.add_argument('--train', type=str,
@@ -48,12 +48,14 @@ def parse_config_file(config_file) -> dict:
 
 
 if __name__ == "__main__":
+    os.environ['TF_CPP_MIN_LOG_LEVEL'] = "2"
 
     args, unknown = _parse_args()
     config = parse_config_file(args.config_file)
 
     loader = DataLoader(config)
     circle = ganCIRCLE(config, args.key, args.secret)
+    circle.g_lr_hr.save('sr_generator_model')
     
     epochs = config["epochs"]
 
@@ -168,4 +170,4 @@ if __name__ == "__main__":
         circle.tf_checkpoint()
 
     #Storing model artifacts
-    circle.g_lr_hr.save(os.path.join(sm_model_dir, '000000001'), 'my_model.h5')
+    circle.g_lr_hr.save('sr_generator.h5')

@@ -266,7 +266,7 @@ class DeepLesionPreprocessor:
     def _prepare_testing(self):
         """ Select randomly x images from fine tuning folder and move them
         """
-        images = glob(self.output_path + 'tune/*')
+        images = glob(self.output_path + 'train/*')
         images = np.random.choice(images, size=50, replace=False)
 
         for img in images:
