@@ -1,0 +1,28 @@
+# Config File for CIRCLE GAN TRAINING
+
+training: True
+version_name: 'h_multi_linear_sft_sn'
+input_type: 'multi'
+input_size: 64
+noise_prob: 0.3
+noise_mu: 0.01
+noise_sd: 0.15
+blur_prob: 0.3
+scaler: 'sigm'
+downscale_rate: 0.5
+epochs: 100
+data_path: 'preprocessed_data/'
+checkpoint_every: 5
+learning_rate: 0.00005
+ttur_rate: 0.25
+batch_size: 16
+epoch_size: 10000
+hu_scale_min: -100
+hu_scale_max: 500
+validation_loss_weight: 1
+cycle_loss_weight: 1
+identity_loss_weight: .5
+joint_loss_weight: .00001
+conditioning: 'sft'
+spectral_normalization: True
+generator_output_activation: 'linear'    
