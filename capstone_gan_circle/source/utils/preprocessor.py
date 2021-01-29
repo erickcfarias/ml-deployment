@@ -1,6 +1,7 @@
 import tensorflow as tf
 import SimpleITK as sitk
 import numpy as np
+import random
 import logging
 from glob import glob
 import os
@@ -27,6 +28,7 @@ class DeepLesionPreprocessor:
         self.downscale_rate = self.input_size / self.crop_size
         self.logger.info(
             'Preprocessor loaded.')
+        
 
     def _get_logger(self):
         logging.basicConfig(
@@ -119,8 +121,6 @@ class DeepLesionPreprocessor:
                         - validate if patch has less than 50% of air
                         - save patch
         """
-        self.logger.info(
-            'Started generating random patches from raw image files.')
         self.files = glob(self.input_path + '*')
         self.file_names = [re.search(pattern=r'\d.+\d.png', string=i)[0]
                            for i in self.files]
@@ -133,7 +133,7 @@ class DeepLesionPreprocessor:
 
         for idx in self.file_idxs:
             n_files = len(os.listdir("preprocessed_data/train"))
-            print(f"{n_files} train files generated")
+            self.logger.info(f"{n_files} train files generated")
             files = [f for f in self.files if idx in f]
 
             counter = 0
@@ -186,8 +186,6 @@ class DeepLesionPreprocessor:
                         - validate if patch has less than 50% of air
                         - save patch
         """
-        self.logger.info(
-            'Started generating random patches from raw image files.')
         self.files = glob(self.input_path + '*')
         self.file_names = [re.search(pattern=r'\d.+\d.png', string=i)[0]
                            for i in self.files]
@@ -268,7 +266,7 @@ class DeepLesionPreprocessor:
     def _prepare_testing(self):
         """ Select randomly x images from fine tuning folder and move them
         """
-        images = glob(self.output_path + 'train/*')
+        images = glob(self.output_path + 'tune/*')
         images = np.random.choice(images, size=50, replace=False)
 
         for img in images:
@@ -302,17 +300,20 @@ class DeepLesionPreprocessor:
                 self._download_data(idx, url)
                 self._delete_folder('download/')
             if self.train:
+                self.logger.info('Starting training data generation.')
                 self._prepare_training()
                 self.logger.info(
-                    'Finished generating random patches for training.')
+                    'Finished training data generation.')
             if self.multi_size:
+                self.logger.info('Starting multi shape training data generation.')
                 self._prepare_multi_sizing_input()
                 self.logger.info(
-                    'Finished generating random size patches for multi sized input.')
+                    'Finished multi shape training data generation.')
             if self.test:
+                self.logger.info('Starting test data generation.')
                 self._prepare_testing()
                 self.logger.info(
-                    'Finished generating lesion centered patches for test images.')
+                    'Finished test data generation.')
             if self.delete_raw:
                 self._delete_folder(self.input_path)
 

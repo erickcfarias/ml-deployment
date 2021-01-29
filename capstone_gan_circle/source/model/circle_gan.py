@@ -4,7 +4,7 @@ from utils.image_tools import calculate_image_similarity
 import tensorflow as tf
 import numpy as np
 from tensorflow.keras.optimizers import Adam
-from tensorflow.keras.utils import plot_model, Progbar
+from tensorflow.keras.utils import Progbar
 import subprocess
 import os
 import pickle as pkl
@@ -13,24 +13,24 @@ import pickle as pkl
 class ganCIRCLE:
 
     def __init__(self,
-                 learning_rate,
-                 ttur_rate,
-                 lambda_cycle,
-                 lambda_val,
-                 lambda_id,
-                 lambda_jst,
-                 checkpoint_every,
-                 batch_size,
-                 hu_scale_min,
-                 hu_scale_max,
-                 version_name,
-                 input_type,
-                 conditioning=None,
-                 spectral_normalization=True,
+                 config,
                  s3_key=None,
-                 s3_secret=None,
-                 gen_output_activation=None
+                 s3_secret=None
                  ):
+        learning_rate=config['learning_rate']
+        ttur_rate=float(config['ttur_rate'])
+        lambda_cycle=config['cycle_loss_weight']
+        lambda_id=config['identity_loss_weight']
+        lambda_val=config['validation_loss_weight']
+        lambda_jst=config['joint_loss_weight']
+        checkpoint_every=config['checkpoint_every']
+        version_name=config['version_name']
+        input_type=config['input_type']
+        hu_scale_min=config['hu_scale_min']
+        hu_scale_max=config['hu_scale_max']
+        conditioning=config['conditioning']
+        spectral_normalization=config['spectral_normalization']
+        gen_output_activation=config['generator_output_activation']
 
         self.lambda_0 = lambda_val
         self.lambda_1 = lambda_cycle
@@ -41,7 +41,7 @@ class ganCIRCLE:
         self.input_type = input_type
         self.s3_key = s3_key
         self.s3_secret = s3_secret
-        self.batch_size = batch_size
+        self.batch_size = config['batch_size']
 
         # Create Folders for checkpointing and images saving
         self._create_folders()

@@ -1,10 +1,12 @@
 import tensorflow as tf
 import argparse
+import yaml
 import os
 import numpy as np
 import json
-from model import ganCIRCLE, generator
+from model.circle_gan import ganCIRCLE
 from utils.loader import DataLoader
+from tensorflow.keras.utils import Progbar
 
 
 def _parse_args():
@@ -51,7 +53,7 @@ if __name__ == "__main__":
     config = parse_config_file(args.config_file)
 
     loader = DataLoader(config)
-    circle = ganCIRCLE(config)
+    circle = ganCIRCLE(config, args.key, args.secret)
     
     epochs = config["epochs"]
 
@@ -88,11 +90,11 @@ if __name__ == "__main__":
                     c = tf.constant(1)
 
                     lr_batch = loader.postprocess_batch(
-                        train_batch[0][:-1], tune_batch[0], w, h, c
+                        train_batch[0][:-1], multi_size_batch[0], w, h, c
                     )
 
                     hr_batch = loader.postprocess_batch(
-                        train_batch[1][:-1], tune_batch[1], w, h, c
+                        train_batch[1][:-1], multi_size_batch[1], w, h, c
                     )
 
                 elif input_type == 'fixed':

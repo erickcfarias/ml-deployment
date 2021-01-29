@@ -8,7 +8,7 @@ from glob import glob
 class DataLoader():
 
     def __init__(self, config):
-        self.data_path = config['input_path']
+        self.data_path = config['data_path']
         self.batch_size = config['batch_size']
         self.hu_scale = (config['hu_scale_min'], config['hu_scale_max'])
         n_imgs = len(glob(self.data_path + 'train/*'))

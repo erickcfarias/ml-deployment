@@ -10,7 +10,7 @@ noise_sd: 0.15
 blur_prob: 0.3
 scaler: 'sigm'
 downscale_rate: 0.5
-epochs: 100
+epochs: 5
 data_path: 'preprocessed_data/'
 checkpoint_every: 5
 learning_rate: 0.00005
